@@ -35,7 +35,49 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _garrafasVolumeController = TextEditingController();
   String garrafas = '';
   String sobras = '';
-  void _encherGalao() {}
+  void _encherGalao() {
+    List<num> garrafas = [];
+    num volumeGalao = num.tryParse(_volumeGalaoController.text);
+    int qtdGarrafas = num.tryParse(_qtdGarrafasController.text);
+    num sobraGarrafa = double.negativeInfinity;
+    var listGarrafas = _garrafasVolumeController.text.split("-");
+    listGarrafas.forEach((element) {
+      garrafas.add(num.tryParse(element));
+    });
+    var r = "";
+    var r2 = "";
+    garrafas.sort((b, a) => a.compareTo(b));
+
+    for (int i = 0; i < garrafas.length; i++) {
+      if (volumeGalao - garrafas[i] >= 0) {
+        volumeGalao -= garrafas[i];
+
+        r += "${garrafas[i]}L ";
+        garrafas[i] = 0;
+      }
+    }
+
+    if (volumeGalao != 0) {
+      for (int i = 0; i < garrafas.length; i++) {
+        if (garrafas[i] != 0) {
+          if (volumeGalao - garrafas[i] > sobraGarrafa) {
+            sobraGarrafa = volumeGalao - garrafas[i];
+            r2 = "${garrafas[i]}L ";
+          }
+        }
+      }
+    } else {
+      sobraGarrafa = 0;
+    }
+    r += r2;
+    print("Foi usado as garrafas de: $r");
+    print("Sobrou: ${sobraGarrafa.abs()}L");
+
+    setState(() {
+      this.garrafas = "Foi usado as garrafas de: $r";
+      sobras = "Sobrou: ${sobraGarrafa.abs()}L";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
